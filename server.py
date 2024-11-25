@@ -66,10 +66,17 @@ model_params = {
     ),
     "homophily": UserSettableParameter("slider", "Homophily", 3, 0, 8, 1),
     
-    # medo pode ser ajustado pela interface
+    # Adjust interface
     "fear": UserSettableParameter("slider", "Fear tolerance", 0.8, 0, 1, 0.01),
 }
 
 server = ModularServer(
-    Schelling, [canvas_element, happy_element, happy_chart, index_element, index_chart], "Schelling", model_params
+    Schelling, 
+    [canvas_element, happy_element, happy_chart, index_element, index_chart], 
+    "Schelling", 
+    model_params
 )
+
+
+
+

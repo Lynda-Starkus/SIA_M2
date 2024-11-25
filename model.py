@@ -31,14 +31,14 @@ class SchellingAgent(Agent):
             if neighbor.type == self.type:
                 similar += 1
         
-        # gera um numero aleatorio que representa o medo dos agentes
+        # Random number to represent agents
         # seed(1)
         self.fear = random()
 
-        # If unhappy, move: por falta de vizinhos semelhantes ou muito medo
+        # If unhappy, move: relocate to vacant (empty) square
         if similar < self.model.homophily or self.fear > self.model.fear:
             self.model.grid.move_to_empty(self)
-        # contabiliza agentes felizes
+        # Count happy agents
         else:
             self.model.happy += 1
             if self.type == 1:
@@ -54,15 +54,15 @@ class Schelling(Model):
 
     def __init__(self, height=20, width=20, density=0.8, minority_pc=0.2, homophily=3, fear=0.8):
 
-        self.total_satisfaction_index = 0 # o indice total de agentes satisfeitos
-        self.blue_satisfaction_index  = 0 # o indice de agentes azuis satisfeitos
-        self.red_satisfaction_index   = 0 # o indice de agentes vermelhos satisfeitos
-        self.total_blue_agents_count  = 0 # o total de agentes azuis
-        self.total_red_agents_count   = 0 # o total de agentes vermelhos
-        self.happy_blue_agents_count  = 0 # o numero de agentes azuis felizes
-        self.happy_red_agents_count   = 0 # o numero de agentes vermelhos felizes
+        self.total_satisfaction_index = 0 # the index total of agents satisfied
+        self.blue_satisfaction_index  = 0 # the index of agents blue satisfied
+        self.red_satisfaction_index   = 0 # the index of agents red satisfied
+        self.total_blue_agents_count  = 0 # the total of agents blue
+        self.total_red_agents_count   = 0 # the total of agents red
+        self.happy_blue_agents_count  = 0 # the numero of agents blue felizes
+        self.happy_red_agents_count   = 0 # the numero of agents red felizes
 
-        self.fear = fear                  # a medida de medo suportado
+        self.fear = fear                  
         self.height = height
         self.width = width
         self.density = density
@@ -109,11 +109,11 @@ class Schelling(Model):
         Run one step of the model. If All agents are happy, halt the model.
         """
 
-        # calcula o indice de satisfacao dos azuis e vermelhos
+        # calculate the index of satisfaction of blue and red
         self.blue_satisfaction_index = float(self.happy_blue_agents_count / max(self.total_blue_agents_count, 1))
         self.red_satisfaction_index  = float(self.happy_red_agents_count / max(self.total_red_agents_count, 1))
         
-        # calcula o indice de satisfacao total
+        # calculate the index of satisfaction total
         total_agents = self.total_blue_agents_count + self.total_red_agents_count
         happy_agents = self.happy_blue_agents_count + self.happy_red_agents_count
         self.total_satisfaction_index = float(happy_agents / total_agents)
@@ -153,8 +153,7 @@ def red_satisfaction_index(model):
     return model.red_satisfaction_index
 
 def batch_run():
-    # a tolerancia e fixada para testar seus efeitos no modelo, principalmente sobre a 
-    # variavel total satisfaction index e blue/red satisfaction index
+    # tolerance value threshold
     number_iterations = 200
     max_steps_per_simulation = 200
     fear_tolerance = 0.1
@@ -164,7 +163,6 @@ def batch_run():
         "width": 20,
         "fear": fear_tolerance
     }
-    # densidade, fracao da minoria e homofilia sao testadas em intervalos de 4
     variable_params = {
         "density": [0.1, 0.2, 0.4, 0.8],
         "minority_pc": [0.1, 0.2, 0.4, 0.8],
@@ -202,6 +200,3 @@ def batch_run():
     file_name_suffix = ("_fear_" + str(fear_tolerance) + "_" + now)
     run_model_data.to_csv("results/model_data" + file_name_suffix + ".csv")
     run_agent_data.to_csv("results/agent_data" + file_name_suffix + ".csv")
-
-# descomentar para coletar os dados e gerar os .csv
-# batch_run()
